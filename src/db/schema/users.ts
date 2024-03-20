@@ -5,6 +5,7 @@ export enum UserStatus {
     INACTIVE = 'in_active'
 }
 export interface IUser extends Document {
+    socketID: string,
     name: string,
     email: string,
     avatar: string,
@@ -13,6 +14,7 @@ export interface IUser extends Document {
 }
 
 const userSchema = new Schema<IUser>({
+    socketID: String,
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     avatar: String,

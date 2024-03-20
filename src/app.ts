@@ -14,18 +14,15 @@ const PORT = process.env.PORT || 3000;
 
 io.on('connection', (socket: Socket) => {
     const emailQuery: string | string[] = socket.handshake.query.email;
-
-    if (typeof emailQuery === 'string') {
-        const email: string = emailQuery;
-        UserService.GetUserChats(email)
-            .then((chats) => {
-                socket.emit('user-chats', chats);
+    if(typeof emailQuery === 'string') {
+        UserService.GetUser(emailQuery).then(r => {
+            console.log(r);
+            UserService.UpdateUserSocket(r._id.toString(), socket.id).then(user => {
+                console.log('user updated', user);
             });
-    } else {
-        // Handle the case when emailQuery is an array
-        console.error('Unexpected format for email query:', emailQuery);
+        });
     }
-    console.log('connected', socket);
+    console.log('connected', socket, emailQuery);
 });
 
 server.listen(PORT, () => {

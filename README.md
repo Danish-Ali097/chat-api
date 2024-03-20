@@ -8,8 +8,8 @@ A Chat API that is use to send and receive messages, shows last seen, active/ina
 
 ## Node & NPM Versions
 
-**Node:** v20.10.0
-**NPM:**  v10.2.3
+- **Node:** v20.10.0
+- **NPM:**  v10.2.3
 
 ## Environment Variables
 

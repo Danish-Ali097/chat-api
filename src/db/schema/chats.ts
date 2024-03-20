@@ -14,11 +14,19 @@ export interface IChat extends Document {
     messages: Array<IMessage>;
 }
 
+const messageSchema: Schema<IMessage> = new Schema<IMessage>({
+    to: { type: String, required: true },
+    from: { type: String, required: true },
+    content: { type: String, required: true },
+    sent_at: { type: Date, required: true },
+    received_at: { type: Date, required: true },
+    seen_at: { type: Date, required: true }
+});
+
 // Define the schema for Chats collection
 const chatSchema: Schema<IChat> = new Schema<IChat>({
     recipients: { type: [String], required: true },
-    messages: { type: [Object], required: true }
+    messages: [ messageSchema ]
 });
 
-
-export default chatSchema;
+export {chatSchema, messageSchema};
