@@ -6,6 +6,11 @@ A Chat API that is use to send and receive messages, shows last seen, active/ina
 
 **Server:** Node, Express, Socket.IO
 
+## Node & NPM Versions
+
+**Node:** v20.10.0
+**NPM:**  v10.2.3
+
 ## Environment Variables
 
 To run this project, you will need to add the following environment variables to your .env file
