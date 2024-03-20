@@ -25,7 +25,6 @@ io.on('connection', (socket: Socket) => {
         // Handle the case when emailQuery is an array
         console.error('Unexpected format for email query:', emailQuery);
     }
-
     console.log('connected', socket);
 });
 
