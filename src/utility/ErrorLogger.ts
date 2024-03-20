@@ -8,6 +8,9 @@ export class ErrorLogger {
         // Format error message with timestamp
         const errorMessage = `[${new Date().toISOString()}] ${error.message}\n`;
 
+        // Write to console.
+        console.error(errorMessage);
+        
         // Append error message to the log file
         fs.appendFile(logFilePath, errorMessage, (err) => {
             if (err) {
