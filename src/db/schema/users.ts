@@ -1,10 +1,11 @@
-import { Schema, Document } from "mongoose";
+import { Schema } from "mongoose";
 
 export enum UserStatus {
     ACTIVE = 'active',
     INACTIVE = 'in_active'
 }
-export interface IUser extends Document {
+export interface IUser {
+    _id?: unknown,
     socketID: string,
     name: string,
     email: string,

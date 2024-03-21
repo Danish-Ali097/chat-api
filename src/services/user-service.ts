@@ -14,7 +14,6 @@ export class UserService {
                 if (!user) {
                     reject('User not found');
                 }
-
                 resolve(user);
             }).catch(e => {
                 reject(e);
@@ -33,16 +32,19 @@ export class UserService {
         });
     }
 
-    public static GetUserChats(filter: FilterQuery<IUser>): Promise<IChat> {
-        return new Promise<IChat>((resolve, reject) => {
+    public static GetUserChats(filter: FilterQuery<IUser>): Promise<IChat[]> {
+        return new Promise<IChat[]>((resolve, reject) => {
             const _db = new DB();
             _db.GetDocument<IUser>(models.Users, filter).then((user: IUser | null) => {
                 if (!user) {
                     reject('User not found');
                 }
-
                 const userID: string = user._id.toString();
-                ChatService.GetChatByUser(userID)
+                ChatService.GetChats({ recipients: { $in: [userID] } }).then( chat => {
+                    resolve(chat);
+                }).catch(e => {
+                    reject(e);
+                });
             }).catch(e => {
                 reject(e);
             });
@@ -74,7 +76,7 @@ export class UserService {
     public static CreateOrUpdateUser(user: IUser) {
         return new Promise<IUser>((resolve, reject) => {
             const _db = new DB();
-            if(Object.keys(user).includes('_id') && user._id.length > 0) {
+            if(Object.keys(user).includes('_id') && user._id !== '') {
                 _db.UpdateDocument<IUser>(models.Users, { _id: user._id.toString() }, user).then((updatedUser: IUser) => {
                     resolve(updatedUser);
                 }).catch(e => {
@@ -82,30 +84,10 @@ export class UserService {
                     reject(e);
                 })
             } else {
-                _db.InsertDocument<IUser>(models.Users, user).then((user:IUser) => {
+                _db.InsertDocument<IUser>(models.Users, user).then((user: IUser) => {
                     resolve(user);
                 }).catch(e => {
 
-                    reject(e);
-                })
-            }
-        });
-    }
-
-    public static CreateOrUpdateChat(chat: IChat) {
-        return new Promise<IChat>((resolve, reject) => {
-            const _db = new DB();
-            if (Object.keys(chat).includes('_id') && chat._id.length > 0) {
-                _db.UpdateDocument<IChat>(models.Chats, { _id: chat._id.toString() }, chat).then((updatedChat: IChat) => {
-                    resolve(updatedChat);
-                }).catch(e => {
-
-                    reject(e);
-                })
-            } else {
-                _db.InsertDocument<IChat>(models.Chats, chat).then((chat: IChat) => {
-                    resolve(chat);
-                }).catch(e => {
                     reject(e);
                 })
             }

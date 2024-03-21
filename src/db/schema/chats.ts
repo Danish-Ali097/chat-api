@@ -1,6 +1,7 @@
-import { Schema, Document } from "mongoose";
+import { Schema } from "mongoose";
 
-export interface IMessage extends Document {
+export interface IMessage {
+    _id?: unknown,
     to: string,
     from: string,
     content: string,
@@ -9,7 +10,8 @@ export interface IMessage extends Document {
     seen_at: Date
 }
 // Define the interface for a chat document
-export interface IChat extends Document {
+export interface IChat {
+    _id?: unknown,
     recipients: Array<string>;
     messages: Array<IMessage>;
 }
@@ -29,4 +31,4 @@ const chatSchema: Schema<IChat> = new Schema<IChat>({
     messages: [ messageSchema ]
 });
 
-export {chatSchema, messageSchema};
+export { chatSchema, messageSchema };
