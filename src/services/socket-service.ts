@@ -29,11 +29,12 @@ export class SocketService {
      * Disconnect User
      * @param socket_id Current socket Id.
      */
-    public static async DisconnectUser(socket_id: string) {
+    public static async DisconnectUser(socket_id: string): Promise<IUser> {
         try {
             const _user = await UserService.GetUser({ socketID: socket_id });
             await UserService.UpdateUserSocket(_user._id.toString(), '')
             await UserService.UpdateUserStatus(_user._id.toString(), UserStatus.INACTIVE);
+            return _user;
         } catch (error) {
             ErrorLogger.logError(error);
         }
