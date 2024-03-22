@@ -10,7 +10,7 @@ export class ErrorLogger {
         const lineNumber = stackTrace.substring(stackTrace.lastIndexOf(':') + 1);
 
         // Format error message with timestamp and line number
-        const errorMessage = `[${new Date().toISOString()}] Error at line ${lineNumber}: ${error.message}\n`;
+        const errorMessage = `[${new Date().toISOString()}] Error at line ${lineNumber}: ${error.message}, StackTrace: ${error.stack}\n`;
 
         // Write to console.
         console.error(errorMessage);

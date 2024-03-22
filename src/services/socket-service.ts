@@ -78,7 +78,7 @@ export class SocketService {
         }
     }
 
-    public static async UpdateMessage(chat_id: string, message: IMessage): Promise<IMessage> {
+    public static async UpdateMessage(chat_id: string, message: IMessage): Promise<IChat> {
         try {
             return await ChatService.UpdateMessage(chat_id, message);
         } catch (error) {

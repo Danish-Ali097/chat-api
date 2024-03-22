@@ -43,6 +43,7 @@ io.on('connection', async (socket: Socket) => {
             socket.join(chat_id);
             socket.emit('selected_chat', chat);
         });
+
         // open existing chat
         socket.on('open_chat', async (chatId) => {
             const chat = await SocketService.GetChat(chatId);
@@ -63,15 +64,17 @@ io.on('connection', async (socket: Socket) => {
             };
             const chat = await SocketService.SendMessage(chat_id, _msg, socket.id);
             const _m = chat.messages[chat.messages.length - 1];
-            
             io.emit(chat._id.toString(), chat);
             io.to(chat_id).emit('new_message', _m);
         });
 
+        // update message
         socket.on('update_message', async (data) => {
             const { chat_id, message } = data;
-            const _message = await SocketService.UpdateMessage(chat_id, message);
+            const _chat = await SocketService.UpdateMessage(chat_id, message);
+            const _message = _chat.messages.find((x) => x._id.toString() === message._id);
             io.to(chat_id).emit('updated_message', _message);
+            io.emit(chat_id + '_updated_message', { chat_id, message: _message });
         });
 
         // disconnect
@@ -117,6 +120,15 @@ app.get('/api/chat', (req, res) => {
     const { user_id } = req.query;
     UserService.GetUserChats({ _id: user_id }).then(chats => {
         return res.json(chats);
+    }).catch(e => {
+        ErrorLogger.logError(e);
+        return res.status(500).json(e);
+    });
+});
+
+app.get('/api/users', (req, res) => {
+    UserService.GetUsers({}).then(users => {
+        return res.json(users);
     }).catch(e => {
         ErrorLogger.logError(e);
         return res.status(500).json(e);

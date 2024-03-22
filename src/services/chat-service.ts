@@ -54,8 +54,8 @@ export class ChatService {
         });
     }
 
-    public static UpdateMessage(chat_id: string, message: IMessage): Promise<IMessage> {
-        return new Promise<IMessage>((resolve, reject) => {
+    public static UpdateMessage(chat_id: string, message: IMessage): Promise<IChat> {
+        return new Promise<IChat>((resolve, reject) => {
             const _db = new DB();
             _db.UpdateDocument<IChat>(models.Chats, { 'messages._id': message._id }, { $set: {
                     'messages.$.content': message.content,
@@ -63,8 +63,7 @@ export class ChatService {
                     'messages.$.seen_at': message.seen_at
                 }
             }).then((chat: IChat) => {
-                const _message = chat.messages.find((x) => x._id.toString() === message._id);
-                resolve(_message);
+                resolve(chat);
             }).catch(e => reject(e));
         });
     }
