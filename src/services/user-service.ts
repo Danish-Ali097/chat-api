@@ -2,7 +2,7 @@ import { FilterQuery } from "mongoose";
 import DB from "../db/db";
 import models from "../db/mongo-models";
 import { IChat } from "../db/schema/chats";
-import { IUser, UserStatus } from "../db/schema/users";
+import { IUser } from "../db/schema/users";
 import { ChatService } from "./chat-service";
 export class UserService {
     constructor() {}
@@ -51,33 +51,19 @@ export class UserService {
         });
     }
 
-    public static UpdateUserSocket(userId: string, socketId: string) {
-        return new Promise((resolve, reject) => {
-            const _db = new DB();
-            _db.UpdateDocument<IUser>(models.Users, { _id: userId }, { socketID: socketId }).then((updatedUser: IUser) => {
-                resolve(updatedUser);
-            }).catch(e => {
-                reject(e);
-            })
-        });
-    }
-
-    public static UpdateUserStatus(userId: string, status: UserStatus) {
-        return new Promise((resolve, reject) => {
-            const _db = new DB();
-            _db.UpdateDocument<IUser>(models.Users, { _id: userId }, { status: status, last_seen: new Date() }).then((updatedUser: IUser) => {
-                resolve(updatedUser);
-            }).catch(e => {
-                reject(e);
-            })
-        });
-    }
-
     public static CreateOrUpdateUser(user: IUser) {
         return new Promise<IUser>((resolve, reject) => {
             const _db = new DB();
             if(Object.keys(user).includes('_id') && user._id !== '') {
-                _db.UpdateDocument<IUser>(models.Users, { _id: user._id.toString() }, user).then((updatedUser: IUser) => {
+                const _usr = { 
+                    name: user.name,
+                    email: user.email,
+                    avatar: user.avatar,
+                    status: user.status,
+                    socketID: user.socketID,
+                    last_seen: user.last_seen
+                };
+                _db.UpdateDocument<IUser>(models.Users, { _id: user._id.toString() }, _usr).then((updatedUser: IUser) => {
                     resolve(updatedUser);
                 }).catch(e => {
 

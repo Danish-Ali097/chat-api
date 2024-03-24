@@ -16,9 +16,11 @@ export class SocketService {
      */
     public static async ConnectUser(email: string, socket_id: string): Promise<IUser> {
         try {
-            const _user = await UserService.GetUser({ email: email });
-            await UserService.UpdateUserSocket(_user._id.toString(), socket_id)
-            await UserService.UpdateUserStatus(_user._id.toString(), UserStatus.ACTIVE);
+            let _user = await UserService.GetUser({ email: email });
+            _user.socketID = socket_id;
+            _user.status = UserStatus.ACTIVE;
+            _user.last_seen = new Date();
+            _user = await UserService.CreateOrUpdateUser(_user);
             return _user;
         } catch (error) {
             ErrorLogger.logError(error);
@@ -31,9 +33,11 @@ export class SocketService {
      */
     public static async DisconnectUser(socket_id: string): Promise<IUser> {
         try {
-            const _user = await UserService.GetUser({ socketID: socket_id });
-            await UserService.UpdateUserSocket(_user._id.toString(), '')
-            await UserService.UpdateUserStatus(_user._id.toString(), UserStatus.INACTIVE);
+            let _user = await UserService.GetUser({ socketID: socket_id });
+            _user.socketID = '';
+            _user.status = UserStatus.INACTIVE;
+            _user.last_seen = new Date();
+            _user = await UserService.CreateOrUpdateUser(_user);
             return _user;
         } catch (error) {
             ErrorLogger.logError(error);
