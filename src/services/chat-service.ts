@@ -5,10 +5,13 @@ import { IChat, IMessage } from "../db/schema/chats";
 export class ChatService {
     constructor() { }
 
-    public static GetChat(query: FilterQuery<IChat>): Promise<IChat> {
+    public static GetChat(query: FilterQuery<IChat>, message_rows: number = 50, message_from: number = 0): Promise<IChat> {
         return new Promise((resolve, reject) => {
             const _db = new DB();
             _db.GetDocument<IChat>(models.Chats, query).then((chat: IChat) => {
+                chat.messages = chat.messages
+                .sort((a,b) => b.sent_at.getTime() - a.sent_at.getTime())
+                .slice(message_from, (message_from + message_rows));
                 resolve(chat);
             }).catch(e => {
                 reject(e);
