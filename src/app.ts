@@ -42,16 +42,20 @@ io.on('connection', async (socket: Socket) => {
             const chat_id = chat._id.toString();
             socket.join(chat_id);
             socket.emit('selected_chat', chat);
-            socket.to(chat_id).emit('user_joined', '');
         });
 
         // open existing chat
         socket.on('open_chat', async (chatId) => {
             const chat = await SocketService.GetChat(chatId);
-            const chat_id = chat._id.toString();
             socket.join(chatId);
             socket.emit('selected_chat', chat);
-            socket.to(chat_id).emit('user_joined', '');
+        });
+
+        // load more messages.
+        socket.on('load_messages', async (data) => {
+            const {chat_id, message_from, message_limit} = data;
+            const chat = await SocketService.GetChat(chat_id, message_limit, message_from);
+            io.to(chat_id).emit('more_messages', chat.messages);
         });
 
         // send chat
@@ -67,6 +71,7 @@ io.on('connection', async (socket: Socket) => {
             };
             const chat = await SocketService.SendMessage(chat_id, _msg, socket.id);
             const _m = chat.messages[chat.messages.length - 1];
+            chat.messages = [_m];
             
             io.emit(chat._id.toString(), chat);
             io.to(chat_id).emit('new_message', _m);

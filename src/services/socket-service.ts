@@ -56,9 +56,16 @@ export class SocketService {
         }
     }
 
-    public static async GetChat(chat_id: string): Promise<IChat> {
+    /**
+     * 
+     * @param chat_id Id of chat we want to fetch.
+     * @param message_rows how many rows in messages, default 50.
+     * @param message_from from which row messages array start from, default = 0.
+     * @returns 
+     */
+    public static async GetChat(chat_id: string, message_rows: number = 50, message_from: number = 0): Promise<IChat> {
         try {
-            return await ChatService.GetChat({ _id: chat_id });
+            return await ChatService.GetChat({ _id: chat_id }, message_rows, message_from);
         } catch (error) {
             ErrorLogger.logError(error);
         }
