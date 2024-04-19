@@ -35,6 +35,6 @@ module.exports = {
         "no-debugger": "warn", // disallow the use of debugger
         "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }], // disallow unused variables except those starting with an underscore
         "@typescript-eslint/explicit-function-return-type": "off", // do not require explicit return types on functions
-        "@typescript-eslint/no-explicit-any": "off" // do not disallow usage of the any type
+        "@typescript-eslint/no-explicit-any": "off" // do not disallow usage of the any type 
     }
 }
